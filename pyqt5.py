@@ -2,7 +2,7 @@ import sys
 import PyQt5.QtWidgets as pq
 import PyQt5.QtGui as gui
 from pymongo import MongoClient
-
+#시작하기전에 cmd에서 mongod --dbpath D:\dev\mongoDB\data\db 입력
 
 
 class LogInDialog(pq.QDialog):
