@@ -25,24 +25,18 @@ class LogInDialog(pq.QDialog):
         db_data=self.collection.find({'id':1})
         for i in db_data:
             self.inputs=i['input']
-        print(self.inputs)
-        if self.inputs == '제1강의실':
-            result = self.collection.find({'name': '제1강의실'})
-            for i in result:
-                seat = i['seat']
-            seat = list(map(int, seat))
-            print(seat)
-        if self.inputs=='제2강의실':
-            result = self.collection.find({'name': '제2강의실'})
-            for i in result:
-                seat = i['seat']
-            seat = list(map(int, seat))
-            print(seat)
+
+
+
+
+        result = self.collection.find({'name': self.inputs})
+        for i in result:
+            seat = i['seat']
+        seat = list(map(int, seat))
+
 
         self.seat = seat
-
         self.name=str()
-        self.all=[]
         self.i=0
         self.j=0
         self.id = None
@@ -52,26 +46,33 @@ class LogInDialog(pq.QDialog):
     def setupUI(self):
 
         one=self.seat.count(1)
-        info='남은좌석수는 '+str(one)+' 석입니다'
+        info='남은좌석수는 '+str(one)+'석입니다.'
         self.setGeometry(400,100,700,400)
 
         label=pq.QLabel(info,self)
-        label.move(100,10)
+        font=label.font()
+
+        font.setPixelSize(40)
+        label.setFont(font)
+        label.move(120 ,20)
         number=1
         yplus = 0
+        if self.inputs == '제1강의실':
+            yplus+=20
 
         for i in range(5):
             xplus = 0
+
+
             if self.inputs=='제2강의실':
-                yplus += 10
+                yplus += 12
             for j in range(6):
                 if self.inputs == '제2강의실':
-                    xplus += 10
-                self.all.append(pq.QPushButton(str(number),self))
-                #self.all[number].pq.QPushButton(str(number),self)
-                self.all[number-1].setText(str(number))
-                self.all[number-1].resize(100,50)
-                self.all[number-1].clicked.connect(self.pushButtonClicked)
+                    xplus += 14
+                btn_in = pq.QPushButton(str(number), self)
+                btn_in.resize(100,50)
+                btn_in.clicked.connect(self.pushButtonClicked)
+
                 i=int(i)
                 j=int(j)
 
@@ -79,9 +80,9 @@ class LogInDialog(pq.QDialog):
                     if j%2==0:
                         xplus+=20
 
-                self.all[number-1].move(j*100+xplus,i*50+yplus+80)
+                btn_in.move(j*100+xplus,i*50+yplus+80)
                 if self.seat[number-1]==0:
-                    self.all[number-1].setDisabled(True)
+                    btn_in.setDisabled(True)
                 number+=1
 
 
@@ -91,11 +92,10 @@ class LogInDialog(pq.QDialog):
         self.name=sending_button.text()
 
         self.seat[int(sending_button.text())-1]=0
-        print(self.seat)
-        if self.inputs=='제1강의실':
-            self.collection.update({'name': '제1강의실'}, {'name': '제1강의실', 'seat': self.seat}, upsert=False)
-        else:
-            self.collection.update({'name': '제2강의실'}, {'name': '제2강의실', 'seat': self.seat}, upsert=False)
+
+
+        self.collection.update({'name': self.inputs}, {'name': self.inputs, 'seat': self.seat}, upsert=False)
+
         self.close()
 
 class Main_display(pq.QWidget):
@@ -119,13 +119,11 @@ class Main_display(pq.QWidget):
         for i in result:
             seats = i['seat']
         self.second_seat= list(map(int, seats))
-        print(self.first_seat)
-        print(self.second_seat)
+
 
         sing_in=login()
         sing_in.exec_()
-        print(sing_in.toss)
-#        title=sing_in.
+        self.name=sing_in.name
 
         self.initUI()
 
@@ -140,7 +138,8 @@ class Main_display(pq.QWidget):
         second_all = len(self.second_seat)
         second_remain = self.second_seat.count(1)
         second_mesesge = str(second_remain) + '/' + str(second_all)
-
+        text=pq.QLabel(self.name+'님 접속을 환영합니다',self)
+        text.move(60,30)
         label=pq.QLabel('예약하실 교실을 선택하여 주십시오',self)
         label.move(50,60)
         self.btn_first = pq.QPushButton('제1강의실\n'+first_mesesge,self)
@@ -211,7 +210,7 @@ class login(pq.QDialog):
         self.income_id=str()
         self.toss=str()
         self.initUI()
-
+        self.name=str()
 
     def initUI(self):
         label=pq.QLabel("아이디와 학번을 입력하여 주십시오",self)
@@ -241,16 +240,18 @@ class login(pq.QDialog):
         result = self.collection.find({'class_num': self.class_num})
         for i in result:
             self.income_id = i['id']
+            self.name=i['name']
         if self.id == self.income_id:
             self.close()
         else:
             self.error.setText('회원정보가 일치하지 않습니다')
             return
     def pushButton2Clicked(self):
-        self.close()
         di=sing_up()
         di.exec_()
         self.toss=di.set_name
+
+        return
 
 
 class sing_up(pq.QDialog):
