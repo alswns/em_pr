@@ -213,6 +213,8 @@ class login(pq.QDialog):
         self.name=str()
 
     def initUI(self):
+        self.setWindowIcon(gui.QIcon('emotion_logo.jpg'))
+        self.setWindowTitle('Emotion project')
         label=pq.QLabel("아이디와 학번을 입력하여 주십시오",self)
         label.move(10,0)
         label1 = pq.QLabel("학번:",self)
@@ -269,6 +271,8 @@ class sing_up(pq.QDialog):
         self.resize(310,250)
         self.initUI()
     def initUI(self):
+        self.setWindowIcon(gui.QIcon('emotion_logo.jpg'))
+        self.setWindowTitle('Emotion project')
         title=pq.QLabel('회원 정보를 입력하여주십시오',self)
         title.move(20,20)
         labe_number=pq.QLabel('학번:',self)
