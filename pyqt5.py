@@ -156,6 +156,7 @@ class Main_display(pq.QWidget):
         btn_format.clicked.connect(self.format)
 
         self.plus = pq.QLabel('예약하실 교실을 선택하여 주십시오',self)
+        self.plus.resize(200,26)
         self.plus.move(50, 220)
 
         self.show()
@@ -163,13 +164,14 @@ class Main_display(pq.QWidget):
 
         self.collection.update({'name': '제1강의실'}, {'name': '제1강의실', 'seat': [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]}, upsert=False)
         self.collection.update({'name': '제2강의실'}, {'name': '제2강의실', 'seat': [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]}, upsert=False)
+
     def pushButoon(self):
         inputs=self.sender().text()
         self.collection.update({'id': 1}, {'id': 1, 'input': str(inputs)[0:5]})
         display=LogInDialog()
         self.close()
         display.exec_()
-
+        self.seat_name=display.sender().text
         result = self.collection.find({'name': '제1강의실'})
         for i in result:
             seats = i['seat']
@@ -190,7 +192,7 @@ class Main_display(pq.QWidget):
 
 
         self.plus.move(70, 220)
-        self.plus.setText(str(display.name)+'번 자리 예약 하셨습니다')
+        self.plus.setText(str(inputs[0:5])+'\n'+str(display.name)+'번 자리 예약 하셨습니다')
         self.btn_first.setText(first_mesesge)
         self.btn_second.setText(second_mesesge)
         self.show()
@@ -213,6 +215,8 @@ class login(pq.QDialog):
         self.name=str()
 
     def initUI(self):
+        self.setWindowIcon(gui.QIcon('emotion_logo.jpg'))
+        self.setWindowTitle('Emotion project')
         label=pq.QLabel("아이디와 학번을 입력하여 주십시오",self)
         label.move(10,0)
         label1 = pq.QLabel("학번:",self)
@@ -269,6 +273,8 @@ class sing_up(pq.QDialog):
         self.resize(310,250)
         self.initUI()
     def initUI(self):
+        self.setWindowIcon(gui.QIcon('emotion_logo.jpg'))
+        self.setWindowTitle('Emotion project')
         title=pq.QLabel('회원 정보를 입력하여주십시오',self)
         title.move(20,20)
         labe_number=pq.QLabel('학번:',self)
