@@ -4,7 +4,7 @@ import PyQt5.QtGui as gui
 import PyQt5.QtCore as cr
 from pymongo import MongoClient
 #시작하기전에 cmd에서 mongod --dbpath D:\dev\mongoDB\data\db 입력
-
+#C:\mongoDB\data\db
 
 class LogInDialog(pq.QDialog):
 
@@ -43,7 +43,12 @@ class LogInDialog(pq.QDialog):
         self.password = None
 
         self.setupUI()
+    def btn_close(self):
+        self.close()
     def setupUI(self):
+        btn_back=pq.QPushButton('뒤로가기',self)
+        btn_back.move(0,0)
+        btn_back.clicked.connect(self.btn_close)
 
         one=self.seat.count(1)
         info='남은좌석수는 '+str(one)+'석입니다.'
@@ -81,6 +86,7 @@ class LogInDialog(pq.QDialog):
                         xplus+=20
 
                 btn_in.move(j*100+xplus,i*50+yplus+80)
+            
                 if self.seat[number-1]==0:
                     btn_in.setDisabled(True)
                 number+=1
